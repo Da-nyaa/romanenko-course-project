@@ -8,7 +8,7 @@ import java.net.Socket;
 
 public class Server {
 
-    private static final int N_THREADS = 10; // Кількість потоків у пулі
+    private static final int N_THREADS = 10;
     private static final CustomThreadPool threadPool = new CustomThreadPool(N_THREADS);
 
     public static void main(String[] args) {
@@ -20,8 +20,6 @@ public class Server {
             while (true) {
                 Socket clientSocket = serverSocket.accept();
                 System.out.println("Новий клієнт приєднався!");
-
-                // Замість створення нового потоку, використовуємо тред пул
                 threadPool.execute(new ClientHandler(clientSocket));
             }
         } catch (IOException e) {
