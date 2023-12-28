@@ -15,9 +15,11 @@ public class FileUtils {
 
     public static void fillIndex(File file) throws IOException {
         String text = getTextFromFile(file);
-        String[] words = text.split("\\W");
+        String[] words = text != null ? text.split("\\W") : new String[0];
         List<String> cleanList = Arrays.stream(words).filter(str -> !str.isEmpty()).toList();
-        cleanList.forEach(word -> Index.getInstance().addWorld(word.toLowerCase(), file.toString()));
+        for (String word : cleanList) {
+            Index.getInstance().addWorld(word.toLowerCase(), file.toString());
+        }
     }
 
     public static List<File> getListOfFiles(File directory) {

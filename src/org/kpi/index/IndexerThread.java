@@ -22,8 +22,7 @@ public class IndexerThread extends Thread {
         for (int i = start; i < end; i++) {
             try {
                 FileUtils.fillIndex(files.get(i));
-            } catch (IOException e) {
-                e.printStackTrace();
+            } catch (IOException ignored) {
             }
         }
     }

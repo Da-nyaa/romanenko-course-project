@@ -3,13 +3,11 @@ package org.kpi.index;
 import org.kpi.utils.ThreadSafeHashMap;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 import java.util.stream.IntStream;
 
 public class Index {
-    private static ThreadSafeHashMap<String, List<String>> index;
+    private static ThreadSafeHashMap<String, Set<String>> index;
     private static Index instance;
 
     private Index() {
@@ -23,16 +21,20 @@ public class Index {
         return instance;
     }
 
+    public void clear(){
+        index = new ThreadSafeHashMap<>();
+    }
 
-    public ArrayList<String> find(String word) {
-        return (ArrayList<String>) index.get(word);
+
+    public Set<String> find(String word) {
+        return index.get(word);
     }
 
     public void addWorld(String word, String file) {
         if (index.containsKey(word)) {
             index.get(word).add(file);
         } else {
-            ArrayList<String> files = new ArrayList<>();
+            Set<String> files = new HashSet<>();
             files.add(file);
             index.put(word, files);
         }
@@ -48,7 +50,7 @@ public class Index {
         Arrays.setAll(threadForIndexers, i -> new IndexerThread(files, (files.size() / numThreads) * i, (files.size() / numThreads) * (i + 1)));
 
         long start = System.currentTimeMillis();
-        IntStream.range(0, numThreads).forEach(i -> threadForIndexers[i].start());
+        IntStream.range(0, numThreads).forEach(i1 -> threadForIndexers[i1].start());
         for (int i = 0; i < numThreads; i++) {
             threadForIndexers[i].join();
         }
